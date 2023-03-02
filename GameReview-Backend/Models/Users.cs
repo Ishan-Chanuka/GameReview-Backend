@@ -7,7 +7,7 @@ namespace GameReview_Backend.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public int UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
 
         [BsonElement("username")]
         public string UserName { get; set; } = string.Empty;
