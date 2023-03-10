@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using GameReview_Backend.Models.RequestModels;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace GameReview_Backend.Models
@@ -19,9 +20,12 @@ namespace GameReview_Backend.Models
         public string ImageUrl { get; set; } = string.Empty;
 
         [BsonElement("rating")]
-        public int Rating { get; set; }
+        public double Rating { get; set; }
 
         [BsonElement("reviews")]
         public List<Reviews> Reviews { get; set; } = new List<Reviews>();
+
+        [BsonElement("deletedFlag")]
+        public bool DeletedFlag { get; set; } = false;
     }
 }
