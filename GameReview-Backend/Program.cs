@@ -23,6 +23,7 @@ builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IGamesService, GamesService>();
 builder.Services.AddScoped<IReviewsService, ReviewService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IConverter, ConverterService>();
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:SecretKey");
 
@@ -43,6 +44,11 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
+builder.Services.AddCors(options => options.AddPolicy(name: "Origin", policy =>
+{
+    policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+}));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -55,6 +61,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors("Origin");
 
 app.MapControllers();
 

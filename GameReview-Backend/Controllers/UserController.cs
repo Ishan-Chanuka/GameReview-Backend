@@ -4,6 +4,7 @@ using GameReview_Backend.Models.ResponseModels;
 using GameReview_Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace GameReview_Backend.Controllers
 {
@@ -22,23 +23,41 @@ namespace GameReview_Backend.Controllers
 
         [HttpPost]
         [Route("SignUp")]
-        public async Task<ActionResult<IEnumerable<Users>>> SignUp(Users entity)
+        public async Task<ActionResult<IEnumerable<Users>>> SignUp(SignUpRequestModel entity)
         {
-            await _user.Insert(entity);
+            ResponseMessageModel response = new();
 
-            var user = new List<Users>();
-            user = await _user.GetUsers();
+            if (entity == null)
+            {
+                response.Message = "Input Fields Cannot Be Empty";
+                return BadRequest(response);
+            }
+            else
+            {
+                var result = await _user.SignUp(entity);
 
-            return Ok(user);
+                if (result == null)
+                {
+                    response.Message = "SignUp Faild";
+                    return BadRequest(response);
+                }
+                response.Message = "SignUp Success";
+                return Ok(response);
+            }
         }
 
         [HttpPost]
         [Route("Login")]
         public ActionResult<IEnumerable<LoginResponseModel>> Login(LoginRequestModel entity)
         {
-            var login = _login.Login(entity);
+            var response = _login.Login(entity);
 
-            return Ok(login);
+            if (response.Email == null || string.IsNullOrEmpty(response.Token))
+            {
+                return Unauthorized(new { message = "Email or Password is incorrect" });
+            }
+
+            return Ok(response);
         }
     }
 }
