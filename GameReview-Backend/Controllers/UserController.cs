@@ -2,6 +2,7 @@
 using GameReview_Backend.Models.RequestModels;
 using GameReview_Backend.Models.ResponseModels;
 using GameReview_Backend.Services.Interfaces;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;

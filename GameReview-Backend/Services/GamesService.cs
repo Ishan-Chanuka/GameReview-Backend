@@ -2,10 +2,15 @@
 using GameReview_Backend.DataAccess.Interface;
 using GameReview_Backend.Models;
 using GameReview_Backend.Models.RequestModels;
+using GameReview_Backend.Models.ResponseModels;
 using GameReview_Backend.Services.Interfaces;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using SharpCompress.Common;
+using MongoDB.Bson.IO;
+using MongoDB.Bson.Serialization;
+using Newtonsoft.Json;
 
 namespace GameReview_Backend.Services
 {
@@ -22,29 +27,69 @@ namespace GameReview_Backend.Services
         private readonly MongoDBSettings _settings;
         private readonly IMongoCollection<Games> _game;
 
-        public async Task<List<Games>> GetAllGames()
+        public async Task<List<GamesResponseModel>> GetAllGames()
         {
-            var result = await _game.FindAsync(_ => true);
+            try
+            {
+                var result = await _game.FindAsync(_ => true);
 
-            return result.ToList();
+                var response = new List<GamesResponseModel>();
+
+                foreach (var item in result.ToList())
+                {
+                    response.Add(new GamesResponseModel()
+                    {
+                        GameId = item.GameId,
+                        Name = item.Name,
+                        Description = item.Description,
+                        ImageUrl = item.ImageUrl,
+                        Rating = item.Rating,
+                        Reviews = item.Reviews,
+                        DeletedFlag = item.DeletedFlag
+                    });
+                }
+
+                return response;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public bool InsertAGame(GameRequestModel entity)
+        public async Task<List<GamesResponseModel>> GetGameById(string Id)
+        {
+            var result = await _game.FindAsync(c => c.GameId == Id);
+
+            var response = new List<GamesResponseModel>();
+
+            
+
+            foreach (var item in result.ToList())
+            {
+                response.Add(new GamesResponseModel()
+                {
+                    GameId = item.GameId,
+                    Name = item.Name,
+                    Description = item.Description,
+                    ImageUrl = item.ImageUrl,
+                    Rating = item.Rating,
+                    Reviews = item.Reviews,
+                    DeletedFlag = item.DeletedFlag
+                });
+            }
+
+            return response;
+        }
+
+        public bool InsertAGame(Games entity)
         {
             bool state = false;
 
+
             if (entity != null)
             {
-                var game = new Games()
-                {
-                    Name = entity.Name,
-                    Description = entity.Description,
-                    ImageUrl = entity.ImageUrl,
-                    Rating = entity.Rating,
-                    DeletedFlag = false
-                };
-
-                _game.InsertOne(game);
+                _game.InsertOne(entity);
             }
 
             return state = true;
@@ -69,5 +114,17 @@ namespace GameReview_Backend.Services
 
             return result.ToList();
         }
+
+        //public byte[] ConvertImg(string image)
+        //{
+        //    byte[] imgdata = null;
+
+        //    if (!string.IsNullOrEmpty(image))
+        //    {
+        //        imgdata = Convert.FromBase64String(image);
+        //    }
+
+        //    return imgdata;
+        //}
     }
 }
