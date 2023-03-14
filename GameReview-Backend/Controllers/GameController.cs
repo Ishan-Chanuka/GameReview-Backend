@@ -34,6 +34,18 @@ namespace GameReview_Backend.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("GetGameById")]
+        public async Task<ActionResult<IEnumerable<Games>>> GetGameById(string Id)
+        {
+            var result = await _games.GetGameById(Id);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
         [HttpPost]
         [Route("CreateAGame")]
         public async Task<ActionResult> CreateAGame([FromForm] GameRequestModel entity)
