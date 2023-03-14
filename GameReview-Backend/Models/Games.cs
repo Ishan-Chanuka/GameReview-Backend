@@ -17,7 +17,7 @@ namespace GameReview_Backend.Models
         public string Description { get; set; } = string.Empty;
 
         [BsonElement("imageUrl")]
-        public string ImageUrl { get; set; } = string.Empty;
+        public byte[] ImageUrl { get; set; }
 
         [BsonElement("rating")]
         public double Rating { get; set; }

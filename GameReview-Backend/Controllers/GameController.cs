@@ -2,8 +2,10 @@
 using GameReview_Backend.Models.RequestModels;
 using GameReview_Backend.Models.ResponseModels;
 using GameReview_Backend.Services.Interfaces;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SharpCompress.Common;
 using System.Threading.Tasks;
 
@@ -34,14 +36,31 @@ namespace GameReview_Backend.Controllers
 
         [HttpPost]
         [Route("CreateAGame")]
-        public async Task<ActionResult<IEnumerable<GameRequestModel>>> CreateAGame([FromBody] GameRequestModel entity)
+        public async Task<ActionResult> CreateAGame([FromForm] GameRequestModel entity)
         {
             ResponseMessageModel response = new();
 
             if (entity == null)
                 return BadRequest();
 
-            var result = _games.InsertAGame(entity);
+            byte[] imageBytes;
+
+            using (var ms = new MemoryStream())
+            {
+                entity.Image.CopyTo(ms);
+                imageBytes = ms.ToArray();
+            }
+
+            var game = new Games()
+            {
+                Name = entity.Name,
+                Description = entity.Description,
+                ImageUrl = imageBytes,
+                Rating = entity.Rating,
+                DeletedFlag = false
+            };
+
+            var result = _games.InsertAGame(game);
 
             if (result == false)
             {
@@ -86,7 +105,7 @@ namespace GameReview_Backend.Controllers
             if (string.IsNullOrEmpty(id))
                 return BadRequest();
 
-            var result =  _games.DeleteAGame(id);
+            var result = _games.DeleteAGame(id);
 
             if (result == null)
             {
