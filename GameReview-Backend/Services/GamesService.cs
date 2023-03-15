@@ -114,17 +114,5 @@ namespace GameReview_Backend.Services
 
             return result.ToList();
         }
-
-        //public byte[] ConvertImg(string image)
-        //{
-        //    byte[] imgdata = null;
-
-        //    if (!string.IsNullOrEmpty(image))
-        //    {
-        //        imgdata = Convert.FromBase64String(image);
-        //    }
-
-        //    return imgdata;
-        //}
     }
 }
