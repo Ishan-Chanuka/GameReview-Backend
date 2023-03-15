@@ -2,11 +2,13 @@
 using GameReview_Backend.Models.RequestModels;
 using GameReview_Backend.Models.ResponseModels;
 using GameReview_Backend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SharpCompress.Common;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace GameReview_Backend.Controllers
@@ -23,6 +25,7 @@ namespace GameReview_Backend.Controllers
         private readonly IGamesService _games;
 
         [HttpGet]
+        [Authorize]
         [Route("GetAllGames")]
         public async Task<ActionResult<IEnumerable<Games>>> GetAllGames()
         {
@@ -35,6 +38,7 @@ namespace GameReview_Backend.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("GetGameById")]
         public async Task<ActionResult<IEnumerable<Games>>> GetGameById(string Id)
         {
@@ -47,6 +51,7 @@ namespace GameReview_Backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [Route("CreateAGame")]
         public async Task<ActionResult> CreateAGame([FromForm] GameRequestModel entity)
         {
@@ -85,6 +90,7 @@ namespace GameReview_Backend.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         [Route("UpdateAGame")]
         public async Task<ActionResult> UpdateAGame([FromBody] Games entity)
         {
@@ -109,6 +115,7 @@ namespace GameReview_Backend.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Admin")]
         [Route("DeleteAGame")]
         public async Task<ActionResult> DeleteAGame(string id)
         {

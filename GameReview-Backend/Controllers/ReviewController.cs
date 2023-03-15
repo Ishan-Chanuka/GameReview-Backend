@@ -2,6 +2,7 @@
 using GameReview_Backend.Models.RequestModels;
 using GameReview_Backend.Models.ResponseModels;
 using GameReview_Backend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace GameReview_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class ReviewController : ControllerBase
     {
         public ReviewController(IReviewsService reviews)
@@ -19,7 +21,9 @@ namespace GameReview_Backend.Controllers
         private readonly IReviewsService _reviews;
 
 
-        [HttpPost("CreateReview")]
+        [HttpPost]
+        [Route("CreateReview")]
+        [Authorize]
         public async Task<IActionResult> CreateReview([FromBody] ReviewRequestModel entity, string gameId)
         {
             ResponseMessageModel response = new();
@@ -41,7 +45,9 @@ namespace GameReview_Backend.Controllers
             return Ok(response);
         }
 
-        [HttpDelete("DeleteReview")]
+        [HttpDelete]
+        [Route("DeleteReview")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteReview(string gameId, string reviewId)
         {
             ResponseMessageModel response = new();
