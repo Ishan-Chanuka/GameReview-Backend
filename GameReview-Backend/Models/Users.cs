@@ -21,4 +21,5 @@ namespace GameReview_Backend.Models
         [BsonElement("password")]
         public string Password { get; set; } = string.Empty;
     }
+    // nice code
 }
