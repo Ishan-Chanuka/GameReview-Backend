@@ -3,11 +3,8 @@ using GameReview_Backend.DataAccess.Interface;
 using GameReview_Backend.Services;
 using GameReview_Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using System.Web.Http;
-using System.Web.Http.Cors;
 
 var builder = WebApplication.CreateBuilder(args);
 
